@@ -25,4 +25,6 @@ public class Commands {
         client.getRestClient().getApplicationService()
                 .createGuildApplicationCommand(BotConfiguration.applicationId, BotConfiguration.guildId, command);
     }
+
+    
 }
