@@ -8,7 +8,8 @@ import discord4j.core.object.component.Button;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import org.springframework.stereotype.Service;
-import pl.damian.bodzioch.configuration.BotConfiguration;
+import pl.damian.bodzioch.configuration.Commands;
+import pl.damian.bodzioch.fileService.FileConstans;
 import pl.damian.bodzioch.fileService.SiatkaFile;
 import reactor.core.publisher.Mono;
 
@@ -25,26 +26,32 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
         String eventName = event.getCommandName();
         switch (eventName){
             case "hero" :
-                return event.reply(buildRespondForHeroCommand(event));
+                return event.reply(buildRespondForHeroCommand(event)).onErrorResume(this::handleError);
             default:
                 return Mono.empty();
         }
     }
 
+    @Override
+    public Mono<Void> handleError(Throwable error) {
+        return Mono.empty();
+    }
+
     private InteractionApplicationCommandCallbackSpec buildRespondForHeroCommand(ChatInputInteractionEvent event) {
-        String heroName = event.getOption("bohater")
+        String heroName = event.getOption(Commands.BOHATER_COMMAND_OPTION)
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString).orElse("");
 
 
         InteractionApplicationCommandCallbackSpec response = InteractionApplicationCommandCallbackSpec.builder()
                 .addEmbed(EmbedCreateSpec.builder()
-                        .image("https://combatpolska.prv.pl/" + "hero/" +
-                                heroName + ".jpg")
+                        .image(ListenersConstans.PHOTOS_URL + ListenersConstans.HERO_PATH +
+                                heroName + FileConstans.JPG_FILE_EXTENSION)
                         .build())
                 .build();
         if (isHaveSiatkaForHero(heroName)) {
-            return response.withComponents(ActionRow.of(Button.primary("siatka" + heroName, "Pokaż siatkę")));
+            return response.withComponents(ActionRow.of(
+                    Button.primary(ButtonInteractionEventListener.SIATKA_TYPE + heroName, "Pokaż siatkę")));
         }
         return response;
     }

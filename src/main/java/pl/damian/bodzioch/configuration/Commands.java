@@ -8,13 +8,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Commands {
+
+    public static final String HERO_COMMAND = "hero";
+    public static final String BOHATER_COMMAND_OPTION = "bohater";
+
     public void setHeroCommand(GatewayDiscordClient client){
 
         ApplicationCommandRequest command = ApplicationCommandRequest.builder()
-                .name("hero")
+                .name(HERO_COMMAND)
                 .description("Pobiera zdjęcie bohatera.")
                 .addOption(ApplicationCommandOptionData.builder()
-                        .name("bohater")
+                        .name(BOHATER_COMMAND_OPTION)
                         .description("Nazwa bohatera")
                         .type(ApplicationCommandOption.Type.STRING.getValue())
                         .required(true)
@@ -26,5 +30,5 @@ public class Commands {
                 .createGuildApplicationCommand(BotConfiguration.applicationId, BotConfiguration.guildId, command);
     }
 
-    
+
 }

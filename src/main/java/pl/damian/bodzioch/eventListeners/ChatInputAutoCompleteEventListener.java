@@ -4,7 +4,7 @@ import discord4j.core.event.domain.interaction.ChatInputAutoCompleteEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.discordjson.json.ApplicationCommandOptionChoiceData;
 import org.springframework.stereotype.Service;
-import pl.damian.bodzioch.configuration.BotConfiguration;
+import pl.damian.bodzioch.configuration.Commands;
 import pl.damian.bodzioch.fileService.HeroFile;
 import reactor.core.publisher.Mono;
 
@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public class ChatInputAutoCompleteEventListener implements EventListener<ChatInputAutoCompleteEvent> {
+
     @Override
     public Class<ChatInputAutoCompleteEvent> getEventType() {
         return ChatInputAutoCompleteEvent.class;
@@ -20,12 +21,17 @@ public class ChatInputAutoCompleteEventListener implements EventListener<ChatInp
 
     @Override
     public Mono<Void> processCommand(ChatInputAutoCompleteEvent event) {
-        if (event.getCommandName().equals("hero")) {
+        if (event.getCommandName().equals(Commands.HERO_COMMAND)) {
             String typing = event.getFocusedOption().getValue()
                     .map(ApplicationCommandInteractionOptionValue::asString)
                     .orElse("");
-            return event.respondWithSuggestions(getFewChoicesOfHero(typing));
+            return event.respondWithSuggestions(getFewChoicesOfHero(typing)).onErrorResume(this::handleError);
         }
+        return Mono.empty();
+    }
+
+    @Override
+    public Mono<Void> handleError(Throwable error) {
         return Mono.empty();
     }
 

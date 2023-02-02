@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono;
 public interface EventListener<T extends Event> {
      Class<T> getEventType();
      Mono<Void> processCommand(T event);
+     Mono<Void> handleError(Throwable error);
 }
