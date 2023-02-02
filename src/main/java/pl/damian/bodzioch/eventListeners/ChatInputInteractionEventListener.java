@@ -27,6 +27,8 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
         switch (eventName){
             case "hero" :
                 return event.reply(buildRespondForHeroCommand(event)).onErrorResume(this::handleError);
+            case "kalendarz" :
+                return event.reply(buildRespondForKalendarzCommand(event)).onErrorResume(this::handleError);
             default:
                 return Mono.empty();
         }
@@ -41,7 +43,6 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
         String heroName = event.getOption(Commands.BOHATER_COMMAND_OPTION)
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString).orElse("");
-
 
         InteractionApplicationCommandCallbackSpec response = InteractionApplicationCommandCallbackSpec.builder()
                 .addEmbed(EmbedCreateSpec.builder()
@@ -58,5 +59,14 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
 
     private boolean isHaveSiatkaForHero(String heroName) {
         return SiatkaFile.heroSiatkaList.contains(heroName);
+    }
+
+    private InteractionApplicationCommandCallbackSpec buildRespondForKalendarzCommand(ChatInputInteractionEvent event) {
+        return InteractionApplicationCommandCallbackSpec.builder()
+                .addEmbed(EmbedCreateSpec.builder()
+                        .image(ListenersConstans.PHOTOS_URL + ListenersConstans.KALENDARZ_PATH
+                                + Commands.KALENDARZ_COMMAND + FileConstans.JPG_FILE_EXTENSION)
+                        .build())
+                .build();
     }
 }

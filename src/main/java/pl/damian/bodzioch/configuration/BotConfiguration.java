@@ -28,7 +28,7 @@ public class BotConfiguration {
     public <T extends Event> GatewayDiscordClient getBotClient(List<EventListener<T>> eventListeners) {
         final DiscordClient client = DiscordClient.create(token);
         final GatewayDiscordClient gateway = client.login().block();
-        commands.setHeroCommand(gateway);
+        commands.setAllCommands(gateway);
         for (EventListener<T> listener : eventListeners) {
             gateway.on(listener.getEventType()).flatMap(listener::processCommand).subscribe();
         }
