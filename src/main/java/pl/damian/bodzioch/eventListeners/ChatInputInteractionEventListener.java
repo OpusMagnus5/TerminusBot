@@ -10,9 +10,13 @@ import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.rest.util.Color;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.configuration.Commands;
-import pl.damian.bodzioch.fileService.FileConstans;
-import pl.damian.bodzioch.fileService.SiatkaFile;
+import pl.damian.bodzioch.fileService.HeroList;
+import pl.damian.bodzioch.fileService.SiatkaList;
+import pl.damian.bodzioch.fileService.WariantList;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ChatInputInteractionEventListener implements EventListener<ChatInputInteractionEvent> {
@@ -29,7 +33,7 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
             case "hero" :
                 return event.reply(buildRespondForHeroCommand(event)).onErrorResume(this::handleError);
             case "kalendarz" :
-                return event.reply(buildRespondForKalendarzCommand(event)).onErrorResume(this::handleError);
+                return event.reply(buildRespondForKalendarzCommand()).onErrorResume(this::handleError);
             case "speed" :
                 return event.reply(buildRespondForSpeedCommand(event)).onErrorResume(this::handleError);
             default:
@@ -46,29 +50,41 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
         String heroName = event.getOption(Commands.BOHATER_HERO_COMMAND_OPTION)
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString).orElse("");
+        if (!HeroList.HERO_NAMES.contains(heroName)) {
+            return InteractionApplicationCommandCallbackSpec.builder()
+                    .content("Nie znaleziono bohatera o nazwie: " + heroName)
+                    .build();
+        }
 
         InteractionApplicationCommandCallbackSpec response = InteractionApplicationCommandCallbackSpec.builder()
                 .addEmbed(EmbedCreateSpec.builder()
                         .image(ListenersConstans.PHOTOS_URL + ListenersConstans.HERO_PATH +
-                                heroName + FileConstans.JPG_FILE_EXTENSION)
+                                heroName + ListenersConstans.JPG_FILE_EXTENSION)
                         .build())
                 .build();
+        List<Button> buttonsList = new ArrayList<>();
         if (isHaveSiatkaForHero(heroName)) {
-            return response.withComponents(ActionRow.of(
-                    Button.primary(ButtonInteractionEventListener.SIATKA_TYPE + heroName, "Pokaż siatkę")));
+            buttonsList.add(Button.primary(ButtonInteractionEventListener.SIATKA_TYPE + heroName, "Pokaż siatkę"));
         }
-        return response;
+        if (isHeroHaveWariant(heroName)) {
+            buttonsList.add(Button.primary(ButtonInteractionEventListener.WARIANT_TYPE + heroName, "Pokaż wariant bohatera"));
+        }
+        return response.withComponents(ActionRow.of(buttonsList));
     }
 
     private boolean isHaveSiatkaForHero(String heroName) {
-        return SiatkaFile.heroSiatkaList.contains(heroName);
+        return SiatkaList.HERO_SIATKA_LIST.contains(heroName);
     }
 
-    private InteractionApplicationCommandCallbackSpec buildRespondForKalendarzCommand(ChatInputInteractionEvent event) {
+    private boolean isHeroHaveWariant(String heroName) {
+        return WariantList.HERO_WARIANT_LIST.contains(heroName);
+    }
+
+    private InteractionApplicationCommandCallbackSpec buildRespondForKalendarzCommand() {
         return InteractionApplicationCommandCallbackSpec.builder()
                 .addEmbed(EmbedCreateSpec.builder()
                         .image(ListenersConstans.PHOTOS_URL + ListenersConstans.KALENDARZ_PATH
-                                + Commands.KALENDARZ_COMMAND + FileConstans.JPG_FILE_EXTENSION)
+                                + Commands.KALENDARZ_COMMAND + ListenersConstans.JPG_FILE_EXTENSION)
                         .build())
                 .build();
     }
