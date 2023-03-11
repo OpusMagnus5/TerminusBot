@@ -5,7 +5,7 @@ import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.discordjson.json.ApplicationCommandOptionChoiceData;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.configuration.Commands;
-import pl.damian.bodzioch.fileService.HeroList;
+import pl.damian.bodzioch.fileService.DataInLists;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ChatInputAutoCompleteEventListener implements EventListener<ChatInp
     }
 
     private List<ApplicationCommandOptionChoiceData> getFewChoicesOfHero(String userInput) {
-        List<String> options = HeroList.HERO_NAMES.stream()
+        List<String> options = DataInLists.HERO_NAMES.stream()
                 .filter(name -> name.contains(userInput))
                 .map(String::toLowerCase)
                 .toList();

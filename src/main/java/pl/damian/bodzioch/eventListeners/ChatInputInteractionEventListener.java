@@ -10,9 +10,7 @@ import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.rest.util.Color;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.configuration.Commands;
-import pl.damian.bodzioch.fileService.HeroList;
-import pl.damian.bodzioch.fileService.SiatkaList;
-import pl.damian.bodzioch.fileService.WariantList;
+import pl.damian.bodzioch.fileService.DataInLists;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -50,7 +48,7 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
         String heroName = event.getOption(Commands.BOHATER_HERO_COMMAND_OPTION)
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString).orElse("");
-        if (!HeroList.HERO_NAMES.contains(heroName)) {
+        if (!DataInLists.HERO_NAMES.contains(heroName)) {
             return InteractionApplicationCommandCallbackSpec.builder()
                     .content("Nie znaleziono bohatera o nazwie: " + heroName)
                     .build();
@@ -73,11 +71,11 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
     }
 
     private boolean isHaveSiatkaForHero(String heroName) {
-        return SiatkaList.HERO_SIATKA_LIST.contains(heroName);
+        return DataInLists.HERO_SIATKA_LIST.contains(heroName);
     }
 
     private boolean isHeroHaveWariant(String heroName) {
-        return WariantList.HERO_WARIANT_LIST.contains(heroName);
+        return DataInLists.HERO_WARIANT_LIST.contains(heroName);
     }
 
     private InteractionApplicationCommandCallbackSpec buildRespondForKalendarzCommand() {

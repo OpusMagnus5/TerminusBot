@@ -9,10 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import pl.damian.bodzioch.eventListeners.EventListener;
-import pl.damian.bodzioch.fileService.HeroList;
-import pl.damian.bodzioch.fileService.SiatkaList;
-import pl.damian.bodzioch.fileService.SiatkiWariantowList;
-import pl.damian.bodzioch.fileService.WariantList;
+import pl.damian.bodzioch.fileService.DataInLists;
+import pl.damian.bodzioch.fileService.ListService;
+import pl.damian.bodzioch.ftp.FtpClient;
 
 import java.util.*;
 
@@ -28,13 +27,9 @@ public class BotConfiguration {
     @Autowired
     Commands commands;
     @Autowired
-    HeroList heroList;
+    ListService listService;
     @Autowired
-    SiatkaList siatkaList;
-    @Autowired
-    WariantList wariantList;
-    @Autowired
-    SiatkiWariantowList siatkiWariantowList;
+    FtpClient ftpClient;
 
     @Bean
     public <T extends Event> GatewayDiscordClient getBotClient(List<EventListener<T>> eventListeners) {
@@ -51,9 +46,9 @@ public class BotConfiguration {
 
     @Scheduled(cron = "@daily")
     private void updateAllLists() {
-        heroList.updateHeroList();
-        siatkaList.updateSiatkaList();
-        wariantList.updateWariantList();
-        siatkiWariantowList.updateSiatkiWariantowList();
+        DataInLists.HERO_NAMES = listService.updateList(ftpClient.HERO_DIR);
+        DataInLists.HERO_SIATKA_LIST = listService.updateList(ftpClient.SIATKA_DIR);
+        DataInLists.HERO_WARIANT_LIST = listService.updateList(ftpClient.WARIANT_DIR);
+        DataInLists.SIATKI_WARIANTOW_LIST = listService.updateList(ftpClient.SIATKI_WARIANTOW_DIR);
     }
 }

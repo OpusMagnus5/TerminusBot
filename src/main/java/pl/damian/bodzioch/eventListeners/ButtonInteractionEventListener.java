@@ -6,7 +6,7 @@ import discord4j.core.object.component.Button;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import org.springframework.stereotype.Service;
-import pl.damian.bodzioch.fileService.SiatkiWariantowList;
+import pl.damian.bodzioch.fileService.DataInLists;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
     }
 
     private boolean isWariantHaveSiatka(String heroName) {
-        return SiatkiWariantowList.SIATKI_WARIANTOW_LIST.contains(heroName);
+        return DataInLists.SIATKI_WARIANTOW_LIST.contains(heroName);
     }
 
     private InteractionApplicationCommandCallbackSpec buildSiatkaWariantuButtonResponse(String heroName) {
