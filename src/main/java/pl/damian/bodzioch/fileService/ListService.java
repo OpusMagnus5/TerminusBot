@@ -27,7 +27,7 @@ public class ListService {
 
         Set<String> listToAssign = Arrays.stream(ftpFiles)
                 .map(FTPFile::getName)
-                .filter(name -> !name.startsWith(".") || !name.endsWith("jpg"))
+                .filter(name -> name.endsWith("jpg"))
                 .map(name -> name.replace(".jpg", ""))
                 .collect(Collectors.toSet());
 

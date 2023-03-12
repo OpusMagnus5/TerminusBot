@@ -67,6 +67,9 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
         if (isHeroHaveWariant(heroName)) {
             buttonsList.add(Button.primary(ButtonInteractionEventListener.WARIANT_TYPE + heroName, "Pokaż wariant bohatera"));
         }
+        if (buttonsList.isEmpty()){
+            return response;
+        }
         return response.withComponents(ActionRow.of(buttonsList));
     }
 
