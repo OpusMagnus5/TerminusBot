@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import pl.damian.bodzioch.eventListeners.EventListener;
 import pl.damian.bodzioch.fileService.DataInLists;
 import pl.damian.bodzioch.fileService.ListService;
-import pl.damian.bodzioch.ftp.FtpClient;
 
 import java.util.*;
 
@@ -28,8 +27,6 @@ public class BotConfiguration {
     Commands commands;
     @Autowired
     ListService listService;
-    @Autowired
-    FtpClient ftpClient;
 
     @Bean
     public <T extends Event> GatewayDiscordClient getBotClient(List<EventListener<T>> eventListeners) {
@@ -46,9 +43,9 @@ public class BotConfiguration {
 
     @Scheduled(cron = "@daily")
     private void updateAllLists() {
-        DataInLists.HERO_NAMES = listService.updateList(ftpClient.HERO_DIR);
-        DataInLists.HERO_SIATKA_LIST = listService.updateList(ftpClient.SIATKA_DIR);
-        DataInLists.HERO_WARIANT_LIST = listService.updateList(ftpClient.WARIANT_DIR);
-        DataInLists.SIATKI_WARIANTOW_LIST = listService.updateList(ftpClient.SIATKI_WARIANTOW_DIR);
+        DataInLists.HERO_NAMES = listService.updateList(ListService.HERO_DIR);
+        DataInLists.HERO_SIATKA_LIST = listService.updateList(ListService.SIATKA_DIR);
+        DataInLists.HERO_WARIANT_LIST = listService.updateList(ListService.WARIANT_DIR);
+        DataInLists.SIATKI_WARIANTOW_LIST = listService.updateList(ListService.SIATKA_WARIANTU_DIR);
     }
 }

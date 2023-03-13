@@ -11,8 +11,11 @@ import discord4j.rest.util.Color;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.configuration.Commands;
 import pl.damian.bodzioch.fileService.DataInLists;
+import pl.damian.bodzioch.fileService.ListService;
 import reactor.core.publisher.Mono;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,12 +57,15 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
                     .build();
         }
 
-        InteractionApplicationCommandCallbackSpec response = InteractionApplicationCommandCallbackSpec.builder()
-                .addEmbed(EmbedCreateSpec.builder()
-                        .image(ListenersConstans.PHOTOS_URL + ListenersConstans.HERO_PATH +
-                                heroName + ListenersConstans.JPG_FILE_EXTENSION)
-                        .build())
-                .build();
+        InteractionApplicationCommandCallbackSpec response;
+        try {
+            String fileDir = ListService.RESOURCE_DIR + ListService.HERO_DIR + heroName + ListService.JPG_FILE_EXTENSION;
+            response = InteractionApplicationCommandCallbackSpec.builder()
+                    .addFile(fileDir, new FileInputStream(fileDir))
+                    .build();
+        } catch (FileNotFoundException e) {
+            return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
+        }
         List<Button> buttonsList = new ArrayList<>();
         if (isHaveSiatkaForHero(heroName)) {
             buttonsList.add(Button.primary(ButtonInteractionEventListener.SIATKA_TYPE + heroName, "Pokaż siatkę"));
@@ -82,12 +88,16 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
     }
 
     private InteractionApplicationCommandCallbackSpec buildRespondForKalendarzCommand() {
-        return InteractionApplicationCommandCallbackSpec.builder()
-                .addEmbed(EmbedCreateSpec.builder()
-                        .image(ListenersConstans.PHOTOS_URL + ListenersConstans.KALENDARZ_PATH
-                                + Commands.KALENDARZ_COMMAND + ListenersConstans.JPG_FILE_EXTENSION)
-                        .build())
-                .build();
+        InteractionApplicationCommandCallbackSpec response;
+        try {
+            String fileDir = ListService.RESOURCE_DIR + ListService.CALENDAR_DIR + "kalendarz" + ListService.JPG_FILE_EXTENSION;
+            response = InteractionApplicationCommandCallbackSpec.builder()
+                    .addFile(fileDir, new FileInputStream(fileDir))
+                    .build();
+        } catch (FileNotFoundException e) {
+            return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
+        }
+        return response;
     }
 
     private InteractionApplicationCommandCallbackSpec buildRespondForSpeedCommand(ChatInputInteractionEvent event) {

@@ -24,7 +24,7 @@ public class Commands {
     public void setAllCommands(GatewayDiscordClient client) {
         List<ApplicationCommandRequest> commands = new ArrayList<>();
         commands.add(setHeroCommand());
-        commands.add(setKalendarzCommand());
+        commands.add(setKalendarzCommand()); //TODO wyrejsterować komende
         commands.add(setSpeedCommand());
         activateCommand(commands, client);
     }

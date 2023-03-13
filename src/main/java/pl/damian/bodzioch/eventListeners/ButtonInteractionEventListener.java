@@ -3,12 +3,14 @@ package pl.damian.bodzioch.eventListeners;
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
-import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.fileService.DataInLists;
+import pl.damian.bodzioch.fileService.ListService;
 import reactor.core.publisher.Mono;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,19 +48,28 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
     }
 
     private InteractionApplicationCommandCallbackSpec buildSiatkaButtonResponse(String heroName) {
-        return InteractionApplicationCommandCallbackSpec.builder()
-                .addEmbed(EmbedCreateSpec.builder()
-                        .image(ListenersConstans.PHOTOS_URL + ListenersConstans.SIATKA_PATH + heroName + ListenersConstans.JPG_FILE_EXTENSION)
-                        .build())
-                .build();
+        InteractionApplicationCommandCallbackSpec response;
+        try {
+            String fileDir = ListService.RESOURCE_DIR + ListService.SIATKA_DIR + heroName + ListService.JPG_FILE_EXTENSION;
+            response = InteractionApplicationCommandCallbackSpec.builder()
+                    .addFile(fileDir, new FileInputStream(fileDir))
+                    .build();
+        } catch (FileNotFoundException e) {
+            return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
+        }
+        return response;
     }
 
     private InteractionApplicationCommandCallbackSpec buildWariantButtonResponse(String heroName) {
-        InteractionApplicationCommandCallbackSpec response = InteractionApplicationCommandCallbackSpec.builder()
-                .addEmbed(EmbedCreateSpec.builder()
-                        .image(ListenersConstans.PHOTOS_URL + ListenersConstans.WARIANTY + heroName + ListenersConstans.JPG_FILE_EXTENSION)
-                        .build())
-                .build();
+        InteractionApplicationCommandCallbackSpec response;
+        try {
+            String fileDir = ListService.RESOURCE_DIR + ListService.WARIANT_DIR + heroName + ListService.JPG_FILE_EXTENSION;
+            response = InteractionApplicationCommandCallbackSpec.builder()
+                    .addFile(fileDir, new FileInputStream(fileDir))
+                    .build();
+        } catch (FileNotFoundException e) {
+            return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
+        }
         List<Button> buttonsList = new ArrayList<>();
         if (isWariantHaveSiatka(heroName)) {
             buttonsList.add(Button.primary(SIATKA_WARIANTU_TYPE + heroName, "Pokaż siatkę dla wariantu"));
@@ -71,11 +82,16 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
     }
 
     private InteractionApplicationCommandCallbackSpec buildSiatkaWariantuButtonResponse(String heroName) {
-        return InteractionApplicationCommandCallbackSpec.builder()
-                .addEmbed(EmbedCreateSpec.builder()
-                        .image(ListenersConstans.PHOTOS_URL + ListenersConstans.SIATKI_WARIANTOW + heroName + ListenersConstans.JPG_FILE_EXTENSION)
-                        .build())
-                .build();
+        InteractionApplicationCommandCallbackSpec response;
+        try {
+            String fileDir = ListService.RESOURCE_DIR + ListService.SIATKA_WARIANTU_DIR + heroName + ListService.JPG_FILE_EXTENSION;
+            response = InteractionApplicationCommandCallbackSpec.builder()
+                    .addFile(fileDir, new FileInputStream(fileDir))
+                    .build();
+        } catch (FileNotFoundException e) {
+            return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
+        }
+        return response;
     }
 
     private String getButtonType(String buttonName) {

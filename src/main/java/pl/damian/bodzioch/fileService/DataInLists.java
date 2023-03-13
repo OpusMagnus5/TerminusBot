@@ -1,10 +1,10 @@
 package pl.damian.bodzioch.fileService;
 
-import java.util.Set;
+import java.util.List;
 
 public class DataInLists {
-    public static Set<String> HERO_NAMES;
-    public static Set<String> HERO_SIATKA_LIST;
-    public static Set<String> SIATKI_WARIANTOW_LIST;
-    public static Set<String> HERO_WARIANT_LIST;
+    public static List<String> HERO_NAMES;
+    public static List<String> HERO_SIATKA_LIST;
+    public static List<String> SIATKI_WARIANTOW_LIST;
+    public static List<String> HERO_WARIANT_LIST;
 }
