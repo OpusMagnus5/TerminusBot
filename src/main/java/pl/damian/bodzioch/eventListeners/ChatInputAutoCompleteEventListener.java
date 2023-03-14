@@ -37,7 +37,7 @@ public class ChatInputAutoCompleteEventListener implements EventListener<ChatInp
 
     private List<ApplicationCommandOptionChoiceData> getFewChoicesOfHero(String userInput) {
         List<String> options = DataInLists.HERO_NAMES.stream()
-                .filter(name -> name.contains(userInput))
+                .filter(name -> name.startsWith(userInput))
                 .map(String::toLowerCase)
                 .toList();
 

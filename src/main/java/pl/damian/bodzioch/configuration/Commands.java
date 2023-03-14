@@ -24,7 +24,7 @@ public class Commands {
     public void setAllCommands(GatewayDiscordClient client) {
         List<ApplicationCommandRequest> commands = new ArrayList<>();
         commands.add(setHeroCommand());
-        commands.add(setKalendarzCommand()); //TODO wyrejsterować komende
+        commands.add(setKalendarzCommand());
         commands.add(setSpeedCommand());
         activateCommand(commands, client);
     }
@@ -118,7 +118,7 @@ public class Commands {
 
     private void activateCommand(List<ApplicationCommandRequest> commands, GatewayDiscordClient client) {
         client.getRestClient().getApplicationService()
-                .bulkOverwriteGuildApplicationCommand(BotConfiguration.applicationId, BotConfiguration.guildId, commands)
+                .bulkOverwriteGlobalApplicationCommand(BotConfiguration.applicationId,  commands)
                 .subscribe();
     }
 
