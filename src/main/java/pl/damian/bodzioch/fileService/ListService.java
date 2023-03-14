@@ -1,8 +1,7 @@
 package pl.damian.bodzioch.fileService;
 
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,7 +10,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Service
 public class ListService {
     public static final String RESOURCE_DIR = "/home/ubuntu/TerminusBot/resources/";
     public static final String HERO_DIR = "hero/";
@@ -21,7 +19,8 @@ public class ListService {
     public static final String CALENDAR_DIR = "kalendarz/";
     public static final String JPG_FILE_EXTENSION = ".jpg";
 
-    public List<String> updateList(String dir) {
+
+    public static List<String> updateList(String dir) {
         try (Stream<Path> stream = Files.list(Paths.get(RESOURCE_DIR + dir))) {
             return stream
                     .filter(file -> !Files.isDirectory(file))
@@ -33,5 +32,13 @@ public class ListService {
         } catch (IOException e) {
             return Collections.emptyList();
         }
+    }
+
+    @Scheduled(cron = "@daily")
+    public static void updateAllLists() {
+        DataInLists.HERO_NAMES = ListService.updateList(ListService.HERO_DIR);
+        DataInLists.HERO_SIATKA_LIST = ListService.updateList(ListService.SIATKA_DIR);
+        DataInLists.HERO_WARIANT_LIST = ListService.updateList(ListService.WARIANT_DIR);
+        DataInLists.SIATKI_WARIANTOW_LIST = ListService.updateList(ListService.SIATKA_WARIANTU_DIR);
     }
 }

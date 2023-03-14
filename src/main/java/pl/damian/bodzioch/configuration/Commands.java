@@ -3,12 +3,10 @@ package pl.damian.bodzioch.configuration;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.discordjson.json.*;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class Commands {
 
     public static final String HERO_COMMAND = "hero";
@@ -21,7 +19,7 @@ public class Commands {
     public static final String FAMILY_OPTION_SPEED_COMMAND = "rodzina";
     public static final String SKILL_OPTION_SPEED_COMMAND = "skill";
 
-    public void setAllCommands(GatewayDiscordClient client) {
+    public static void setAllCommands(GatewayDiscordClient client) {
         List<ApplicationCommandRequest> commands = new ArrayList<>();
         commands.add(setHeroCommand());
         commands.add(setKalendarzCommand());
@@ -29,7 +27,7 @@ public class Commands {
         activateCommand(commands, client);
     }
 
-    private ApplicationCommandRequest setHeroCommand() {
+    private static ApplicationCommandRequest setHeroCommand() {
         return ApplicationCommandRequest.builder()
                 .name(HERO_COMMAND)
                 .description("Wyświetla zdjęcie bohatera.")
@@ -43,14 +41,14 @@ public class Commands {
                 .build();
     }
 
-    private ApplicationCommandRequest setKalendarzCommand() {
+    private static ApplicationCommandRequest setKalendarzCommand() {
         return ApplicationCommandRequest.builder()
                 .name(KALENDARZ_COMMAND)
                 .description("Wyświetla aktualny kalendarz.")
                 .build();
     }
 
-    private ApplicationCommandRequest setSpeedCommand() {
+    private static ApplicationCommandRequest setSpeedCommand() {
         return ApplicationCommandRequest.builder()
                 .name(SPEED_COMMAND)
                 .description("Sprawdza czy uda się przełamać szybkość bohatera")
@@ -59,7 +57,7 @@ public class Commands {
                 .build();
     }
 
-    private ImmutableApplicationCommandOptionData buildBaseOptionSpeedCommand() {
+    private static ImmutableApplicationCommandOptionData buildBaseOptionSpeedCommand() {
         return ApplicationCommandOptionData.builder()
                 .name(BASE_OPTION_SPEED_COMMAND)
                 .description("Podaj szybkość bazową karty.")
@@ -70,7 +68,7 @@ public class Commands {
                 .build();
     }
 
-    private ImmutableApplicationCommandOptionData buildSiatkaBonusOptionSpeedCommand() {
+    private static ImmutableApplicationCommandOptionData buildSiatkaBonusOptionSpeedCommand() {
         return ApplicationCommandOptionData.builder()
                 .name(SIATKA_OPTION_SPEED_COMMAND)
                 .description("Podaj procent do szybkości ze siatki")
@@ -86,7 +84,7 @@ public class Commands {
                 .build();
     }
 
-    private ImmutableApplicationCommandOptionData buildGunBonusOptionSpeedCommand() {
+    private static ImmutableApplicationCommandOptionData buildGunBonusOptionSpeedCommand() {
         return ApplicationCommandOptionData.builder()
                 .name(GUN_OPTION_SPEED_COMMAND)
                 .description("Podaj bonus szybkości broni")
@@ -96,7 +94,7 @@ public class Commands {
                 .build();
     }
 
-    private ImmutableApplicationCommandOptionData buildFamilyBonusOptionSpeedCommand() {
+    private static ImmutableApplicationCommandOptionData buildFamilyBonusOptionSpeedCommand() {
         return ApplicationCommandOptionData.builder()
                 .name(FAMILY_OPTION_SPEED_COMMAND)
                 .description("Podaj bonus szybkości rodziny")
@@ -106,7 +104,7 @@ public class Commands {
                 .build();
     }
 
-    private ImmutableApplicationCommandOptionData buildSkillBonusOptionSpeedCommand() {
+    private static ImmutableApplicationCommandOptionData buildSkillBonusOptionSpeedCommand() {
         return ApplicationCommandOptionData.builder()
                 .name(SKILL_OPTION_SPEED_COMMAND)
                 .description("Podaj bonus szybkości umiejętności")
@@ -116,7 +114,7 @@ public class Commands {
                 .build();
     }
 
-    private void activateCommand(List<ApplicationCommandRequest> commands, GatewayDiscordClient client) {
+    private static void activateCommand(List<ApplicationCommandRequest> commands, GatewayDiscordClient client) {
         client.getRestClient().getApplicationService()
                 .bulkOverwriteGlobalApplicationCommand(BotConfiguration.applicationId,  commands)
                 .subscribe();

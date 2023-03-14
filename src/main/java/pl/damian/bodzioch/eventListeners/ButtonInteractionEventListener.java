@@ -4,6 +4,8 @@ import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.fileService.DataInLists;
 import pl.damian.bodzioch.fileService.ListService;
@@ -20,6 +22,9 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
     public static final String SIATKA_TYPE = "siatka";
     public static final String WARIANT_TYPE = "wariant";
     public static final String SIATKA_WARIANTU_TYPE = "siatka_for_wariant";
+
+    @Autowired
+    Logger logger;
 
     @Override
     public Class<ButtonInteractionEvent> getEventType() {
@@ -44,17 +49,20 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
 
     @Override
     public Mono<Void> handleError(Throwable error) {
+        logger.info("Error during process ButtonInteractionEventListener");
         return Mono.empty();
     }
 
     private InteractionApplicationCommandCallbackSpec buildSiatkaButtonResponse(String heroName) {
         InteractionApplicationCommandCallbackSpec response;
         try {
+            logger.info("Handling SiatkaButton event");
             String fileDir = ListService.RESOURCE_DIR + ListService.SIATKA_DIR + heroName + ListService.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
         } catch (FileNotFoundException e) {
+            logger.warn("File not found", e);
             return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
         }
         return response;
@@ -63,11 +71,13 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
     private InteractionApplicationCommandCallbackSpec buildWariantButtonResponse(String heroName) {
         InteractionApplicationCommandCallbackSpec response;
         try {
+            logger.info("Handling WariantButton event");
             String fileDir = ListService.RESOURCE_DIR + ListService.WARIANT_DIR + heroName + ListService.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
         } catch (FileNotFoundException e) {
+            logger.warn("File not found", e);
             return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
         }
         List<Button> buttonsList = new ArrayList<>();
@@ -84,11 +94,13 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
     private InteractionApplicationCommandCallbackSpec buildSiatkaWariantuButtonResponse(String heroName) {
         InteractionApplicationCommandCallbackSpec response;
         try {
+            logger.info("Handling SiatkaWariantuButton event");
             String fileDir = ListService.RESOURCE_DIR + ListService.SIATKA_WARIANTU_DIR + heroName + ListService.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
         } catch (FileNotFoundException e) {
+            logger.warn("File not found", e);
             return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
         }
         return response;

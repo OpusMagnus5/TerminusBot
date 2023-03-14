@@ -8,6 +8,8 @@ import discord4j.core.object.component.Button;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.rest.util.Color;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.configuration.Commands;
 import pl.damian.bodzioch.fileService.DataInLists;
@@ -21,6 +23,9 @@ import java.util.List;
 
 @Service
 public class ChatInputInteractionEventListener implements EventListener<ChatInputInteractionEvent> {
+
+    @Autowired
+    Logger logger;
 
     @Override
     public Class<ChatInputInteractionEvent> getEventType() {
@@ -44,10 +49,12 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
 
     @Override
     public Mono<Void> handleError(Throwable error) {
+        logger.info("Error during process ChatInputInteractionEvent");
         return Mono.empty();
     }
 
     private InteractionApplicationCommandCallbackSpec buildRespondForHeroCommand(ChatInputInteractionEvent event) {
+        logger.info("Handling HeroCommand event");
         String heroName = event.getOption(Commands.BOHATER_HERO_COMMAND_OPTION)
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString).orElse("");
@@ -64,6 +71,7 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
         } catch (FileNotFoundException e) {
+            logger.warn("File not found", e);
             return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
         }
         List<Button> buttonsList = new ArrayList<>();
@@ -88,6 +96,7 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
     }
 
     private InteractionApplicationCommandCallbackSpec buildRespondForKalendarzCommand() {
+        logger.info("Handling KalendarzCommand event");
         InteractionApplicationCommandCallbackSpec response;
         try {
             String fileDir = ListService.RESOURCE_DIR + ListService.CALENDAR_DIR + "kalendarz" + ListService.JPG_FILE_EXTENSION;
@@ -95,12 +104,14 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
         } catch (FileNotFoundException e) {
+            logger.warn("File not found", e);
             return InteractionApplicationCommandCallbackSpec.builder().content("Coś poszło nie tak.").build();
         }
         return response;
     }
 
     private InteractionApplicationCommandCallbackSpec buildRespondForSpeedCommand(ChatInputInteractionEvent event) {
+        logger.info("Handling SpeedCommand event");
         long base = event.getOption(Commands.BASE_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asLong).orElse(0L);
         long gun = event.getOption(Commands.GUN_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
