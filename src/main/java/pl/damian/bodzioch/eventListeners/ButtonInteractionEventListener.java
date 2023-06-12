@@ -7,7 +7,7 @@ import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.damian.bodzioch.fileService.DataInLists;
+import pl.damian.bodzioch.dao.SiatkaWariantowDAO;
 import pl.damian.bodzioch.fileService.ListService;
 import reactor.core.publisher.Mono;
 
@@ -25,6 +25,10 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
 
     @Autowired
     Logger logger;
+    @Autowired
+    ListService listService;
+    @Autowired
+    SiatkaWariantowDAO siatkaWariantowDAO;
 
     @Override
     public Class<ButtonInteractionEvent> getEventType() {
@@ -57,7 +61,7 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
         InteractionApplicationCommandCallbackSpec response;
         try {
             logger.info("Handling SiatkaButton event");
-            String fileDir = ListService.RESOURCE_DIR + ListService.SIATKA_DIR + heroName + ListService.JPG_FILE_EXTENSION;
+            String fileDir = listService.RESOURCE_DIR + listService.SIATKA_DIR + heroName + listService.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
@@ -72,7 +76,7 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
         InteractionApplicationCommandCallbackSpec response;
         try {
             logger.info("Handling WariantButton event");
-            String fileDir = ListService.RESOURCE_DIR + ListService.WARIANT_DIR + heroName + ListService.JPG_FILE_EXTENSION;
+            String fileDir = listService.RESOURCE_DIR + listService.WARIANT_DIR + heroName + listService.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
@@ -88,14 +92,14 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
     }
 
     private boolean isWariantHaveSiatka(String heroName) {
-        return DataInLists.SIATKI_WARIANTOW_LIST.contains(heroName);
+        return siatkaWariantowDAO.getSiatkaWariantowByHeroName(heroName).isPresent();
     }
 
     private InteractionApplicationCommandCallbackSpec buildSiatkaWariantuButtonResponse(String heroName) {
         InteractionApplicationCommandCallbackSpec response;
         try {
             logger.info("Handling SiatkaWariantuButton event");
-            String fileDir = ListService.RESOURCE_DIR + ListService.SIATKA_WARIANTU_DIR + heroName + ListService.JPG_FILE_EXTENSION;
+            String fileDir = listService.RESOURCE_DIR + listService.SIATKA_WARIANTU_DIR + heroName + listService.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();

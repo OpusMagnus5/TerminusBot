@@ -3,9 +3,10 @@ package pl.damian.bodzioch.eventListeners;
 import discord4j.core.event.domain.interaction.ChatInputAutoCompleteEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.discordjson.json.ApplicationCommandOptionChoiceData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.configuration.Commands;
-import pl.damian.bodzioch.fileService.DataInLists;
+import pl.damian.bodzioch.dao.HeroDAO;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import java.util.List;
 @Service
 public class ChatInputAutoCompleteEventListener implements EventListener<ChatInputAutoCompleteEvent> {
 
+    @Autowired
+    Commands commands;
+    @Autowired
+    HeroDAO heroDAO;
+
     @Override
     public Class<ChatInputAutoCompleteEvent> getEventType() {
         return ChatInputAutoCompleteEvent.class;
@@ -21,7 +27,7 @@ public class ChatInputAutoCompleteEventListener implements EventListener<ChatInp
 
     @Override
     public Mono<Void> processCommand(ChatInputAutoCompleteEvent event) {
-        if (event.getCommandName().equals(Commands.HERO_COMMAND)) {
+        if (event.getCommandName().equals(commands.HERO_COMMAND)) {
             String typing = event.getFocusedOption().getValue()
                     .map(ApplicationCommandInteractionOptionValue::asString)
                     .orElse("");
@@ -36,17 +42,8 @@ public class ChatInputAutoCompleteEventListener implements EventListener<ChatInp
     }
 
     private List<ApplicationCommandOptionChoiceData> getFewChoicesOfHero(String userInput) {
-        List<String> options = DataInLists.HERO_NAMES.stream()
-                .filter(name -> name.startsWith(userInput))
-                .map(String::toLowerCase)
-                .toList();
-
-        if (options.size() > 5) {
-            options = options.subList(0, 4);
-        }
-
+        List<String> options = heroDAO.getFiveHeroByPattern(userInput);
         List<ApplicationCommandOptionChoiceData> suggestions = new ArrayList<>();
-
         for (String option : options) {
             suggestions.add(ApplicationCommandOptionChoiceData.builder().name(option).value(option).build());
         }

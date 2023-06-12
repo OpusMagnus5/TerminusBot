@@ -1,4 +1,4 @@
-package pl.damian.bodzioch.fileService;
+package pl.damian.bodzioch.dao;
 
 import java.util.List;
 

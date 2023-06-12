@@ -5,14 +5,19 @@ import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
+import discord4j.core.object.component.LayoutComponent;
+import discord4j.core.object.component.TextInput;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
+import discord4j.core.spec.InteractionPresentModalSpec;
 import discord4j.rest.util.Color;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.configuration.Commands;
-import pl.damian.bodzioch.fileService.DataInLists;
+import pl.damian.bodzioch.dao.HeroDAO;
+import pl.damian.bodzioch.dao.HeroWariantDAO;
+import pl.damian.bodzioch.dao.SiatkaDAO;
 import pl.damian.bodzioch.fileService.ListService;
 import reactor.core.publisher.Mono;
 
@@ -26,6 +31,16 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
 
     @Autowired
     Logger logger;
+    @Autowired
+    ListService listService;
+    @Autowired
+    Commands commands;
+    @Autowired
+    HeroDAO heroDAO;
+    @Autowired
+    SiatkaDAO siatkaDAO;
+    @Autowired
+    HeroWariantDAO heroWariantDAO;
 
     @Override
     public Class<ChatInputInteractionEvent> getEventType() {
@@ -42,6 +57,8 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
                 return event.reply(buildRespondForKalendarzCommand()).onErrorResume(this::handleError);
             case "speed" :
                 return event.reply(buildRespondForSpeedCommand(event)).onErrorResume(this::handleError);
+            case "blacklist-add" :
+                return event.presentModal(buildRespondForAddPlayerToBlackListCommand()).onErrorResume(this::handleError);
             default:
                 return Mono.empty();
         }
@@ -49,16 +66,16 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
 
     @Override
     public Mono<Void> handleError(Throwable error) {
-        logger.info("Error during process ChatInputInteractionEvent");
+        logger.info("Error during process ChatInputInteractionEvent", error);
         return Mono.empty();
     }
 
     private InteractionApplicationCommandCallbackSpec buildRespondForHeroCommand(ChatInputInteractionEvent event) {
         logger.info("Handling HeroCommand event");
-        String heroName = event.getOption(Commands.BOHATER_HERO_COMMAND_OPTION)
+        String heroName = event.getOption(commands.BOHATER_HERO_COMMAND_OPTION)
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString).orElse("");
-        if (!DataInLists.HERO_NAMES.contains(heroName)) {
+        if (heroDAO.getHeroByName(heroName).isEmpty()) {
             return InteractionApplicationCommandCallbackSpec.builder()
                     .content("Nie znaleziono bohatera o nazwie: " + heroName)
                     .build();
@@ -66,7 +83,7 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
 
         InteractionApplicationCommandCallbackSpec response;
         try {
-            String fileDir = ListService.RESOURCE_DIR + ListService.HERO_DIR + heroName + ListService.JPG_FILE_EXTENSION;
+            String fileDir = listService.RESOURCE_DIR + listService.HERO_DIR + heroName + listService.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
@@ -88,18 +105,18 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
     }
 
     private boolean isHaveSiatkaForHero(String heroName) {
-        return DataInLists.HERO_SIATKA_LIST.contains(heroName);
+        return siatkaDAO.getSiatkaByHeroName(heroName).isPresent();
     }
 
     private boolean isHeroHaveWariant(String heroName) {
-        return DataInLists.HERO_WARIANT_LIST.contains(heroName);
+        return heroWariantDAO.getHeroWariantByName(heroName).isPresent();
     }
 
     private InteractionApplicationCommandCallbackSpec buildRespondForKalendarzCommand() {
         logger.info("Handling KalendarzCommand event");
         InteractionApplicationCommandCallbackSpec response;
         try {
-            String fileDir = ListService.RESOURCE_DIR + ListService.CALENDAR_DIR + "kalendarz" + ListService.JPG_FILE_EXTENSION;
+            String fileDir = listService.RESOURCE_DIR + listService.CALENDAR_DIR + "kalendarz" + listService.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
                     .build();
@@ -112,15 +129,15 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
 
     private InteractionApplicationCommandCallbackSpec buildRespondForSpeedCommand(ChatInputInteractionEvent event) {
         logger.info("Handling SpeedCommand event");
-        long base = event.getOption(Commands.BASE_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
+        long base = event.getOption(commands.BASE_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asLong).orElse(0L);
-        long gun = event.getOption(Commands.GUN_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
+        long gun = event.getOption(commands.GUN_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asLong).orElse(0L);
-        long siatka = event.getOption(Commands.SIATKA_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
+        long siatka = event.getOption(commands.SIATKA_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asLong).orElse(0L);
-        long family = event.getOption(Commands.FAMILY_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
+        long family = event.getOption(commands.FAMILY_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asLong).orElse(0L);
-        long skill = event.getOption(Commands.SKILL_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
+        long skill = event.getOption(commands.SKILL_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asLong).orElse(0L);
 
         return InteractionApplicationCommandCallbackSpec.builder()
@@ -139,5 +156,22 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
 
     private String calculateSpeed(long base, long gun, long siatka, long family, long skill){
         return String.valueOf((int) Math.ceil((((78 - (base + gun)) * 0.14D) + 6.08D) / (1 + ((siatka + family + skill) / 100D))));
+    }
+
+    private InteractionPresentModalSpec buildRespondForAddPlayerToBlackListCommand() {
+
+        ActionRow playerName = ActionRow.of(TextInput.small(commands.BLACKLIST_FORM_PLAYER_INPUT, "Nazwa gracza", "Podaj nazwę gracza").required(true));
+        ActionRow reason = ActionRow.of(TextInput.paragraph(commands.BLACKLIST_FORM_REASON_INPUT, "Powód dodania", "Podaj powód").required(true));
+        ActionRow reportingPerson = ActionRow.of(TextInput.small(commands.BLACKLIST_FORM_REPORTING_PERSON_INPUT, "Nazwa osoby/sojuszu zgłaszającego gracza", "Podaj nazwę osoby/sojuszu").required(false));
+        ActionRow level = ActionRow.of(TextInput.small(commands.BLACKLIST_FORM_PLAYER_LEVEL_INPUT, "Poziom gracza", "Podaj poziom gracza").required(false));
+        ActionRow otherNames = ActionRow.of(TextInput.paragraph(commands.BLACKLIST_FORM_OTHER_NAMES_INPUT, "Podaj inne nicki gracza - jeśli znane", "Podaj nicki gracza").required(false));
+
+        List<LayoutComponent> formFields = List.of(playerName, reason, reportingPerson, level, otherNames);
+
+        return InteractionPresentModalSpec.builder()
+                .title("Dodawanie gracza do czarnej listy")
+                .customId(commands.BLACKLIST_FORM_MODAL)
+                .addAllComponents(formFields)
+                .build();
     }
 }

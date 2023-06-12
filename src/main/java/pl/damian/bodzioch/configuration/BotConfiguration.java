@@ -23,12 +23,14 @@ public class BotConfiguration {
 
     @Autowired
     ListService listService;
+    @Autowired
+    Commands commands;
 
     @Bean
     public <T extends Event> GatewayDiscordClient getBotClient(List<EventListener<T>> eventListeners) {
         final DiscordClient client = DiscordClient.create(TOKEN);
         final GatewayDiscordClient gateway = client.login().block();
-        Commands.setAllCommands(gateway);
+        commands.setAllCommands(gateway);
         logger().info("Aktywowano komendy");
         listService.updateAllLists();
         logger().info("Zaktualizowano listy");
