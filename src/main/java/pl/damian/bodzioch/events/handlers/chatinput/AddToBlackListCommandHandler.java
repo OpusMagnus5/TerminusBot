@@ -57,8 +57,15 @@ public class AddToBlackListCommandHandler implements EventHandler<ChatInputInter
                     .content(e.getMessage())
                     .build());
         }
+
         String url = attachment.getUrl();
-        attachmentDAO.saveBlackListAttachment(event, url, playerName);
+        try {
+            attachmentDAO.saveBlackListAttachment(url, playerName);
+        } catch (IOException e) {
+            logger.error("Error during download BlackList photo", e);
+            event.reply("Nie udało się pobrać zdjęcia. Spróbuj ponownie.");
+        }
+
         List<LayoutComponent> formFields = buildForm();
         return event.presentModal(InteractionPresentModalSpec.builder()
                 .title("Dodawanie gracza do czarnej listy")

@@ -16,6 +16,10 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
     private static final String SPEED_TYPE = SpeedCommand.SPEED_COMMAND;
     private static final String ADD_TO_BLACKLIST_TYPE = AddToBlackListCommand.ADD_PLAYER_TO_BLACKLIST_COMMAND;
     private static final String CHECK_BLACKLIST_TYPE = CheckBlackListCommand.CHECK_BLACKLIST_COMMAND;
+    private static final String ADD_HERO_TYPE = HeroAddCommand.HERO_ADD_COMMAND;
+    private static final String ADD_SIATKA_TYPE = SiatkaAddCommand.SIATKA_ADD_COMMAND;
+    private static final String ADD_WARIANT_TYPE = WariantAddCommand.WARIANT_ADD_COMMAND;
+    private static final String ADD_SIATKA_WARIANTU_TYPE = SiatkaWariantuAddCommand.SIATKA_WARIANTU_ADD_COMMAND;
 
     @Autowired
     Logger logger;
@@ -29,6 +33,14 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
     AddToBlackListCommandHandler addToBlackListCommandHandler;
     @Autowired
     CheckBlackListCommandHandler checkBlackListCommandHandler;
+    @Autowired
+    HeroAddCommandHandler heroAddCommandHandler;
+    @Autowired
+    SiatkaAddCommandHandler siatkaAddCommandHandler;
+    @Autowired
+    WariantAddCommandHandler wariantAddCommandHandler;
+    @Autowired
+    SiatkaWariantuAddCommandHandler siatkaWariantuAddCommandHandler;
 
     @Override
     public Class<ChatInputInteractionEvent> getEventType() {
@@ -44,6 +56,10 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
             case SPEED_TYPE -> speedCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
             case ADD_TO_BLACKLIST_TYPE -> addToBlackListCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
             case CHECK_BLACKLIST_TYPE -> checkBlackListCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+            case ADD_HERO_TYPE -> heroAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+            case ADD_SIATKA_TYPE -> siatkaAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+            case ADD_WARIANT_TYPE -> wariantAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+            case ADD_SIATKA_WARIANTU_TYPE -> siatkaWariantuAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
             default -> Mono.empty();
         };
     }

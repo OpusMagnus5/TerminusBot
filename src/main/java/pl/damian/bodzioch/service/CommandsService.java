@@ -28,10 +28,20 @@ public class CommandsService {
     AddToBlackListCommand addToBlackListCommand;
     @Autowired
     CheckBlackListCommand checkBlackListCommand;
+    @Autowired
+    HeroAddCommand heroAddCommand;
+    @Autowired
+    SiatkaAddCommand siatkaAddCommand;
+    @Autowired
+    WariantAddCommand wariantAddCommand;
+    @Autowired
+    SiatkaWariantuAddCommand siatkaWariantuAddCommand;
 
     public void setAllCommands(GatewayDiscordClient client) {
         List<ApplicationCommandRequest> commands = new ArrayList<>(List.of(heroCommand.setHeroCommand(), calendarCommand.setKalendarzCommand(),
-                speedCommand.setSpeedCommand(), addToBlackListCommand.setAddPlayerToBlackList(), checkBlackListCommand.setCheckBlackListCommand()));
+                speedCommand.setSpeedCommand(), addToBlackListCommand.setAddPlayerToBlackList(), checkBlackListCommand.setCheckBlackListCommand(),
+                heroAddCommand.setHeroAddCommand(), siatkaAddCommand.setSiatkaAddCommand(), wariantAddCommand.setWariantAddCommand(),
+                siatkaWariantuAddCommand.setSiatkaWariantuAddCommand()));
 
         activateCommand(commands, client);
         /*activateTestCommand(commands,client);*/

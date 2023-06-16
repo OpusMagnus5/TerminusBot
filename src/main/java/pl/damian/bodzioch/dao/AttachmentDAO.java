@@ -1,7 +1,11 @@
 package pl.damian.bodzioch.dao;
 
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import java.io.IOException;
 
 public interface AttachmentDAO {
-    void saveBlackListAttachment(ChatInputInteractionEvent event, String url, String photoId);
+    void saveBlackListAttachment(String url, String photoId) throws IOException;
+    void saveHeroAttachment(String url, String photoId) throws IOException;
+    void saveSiatkaAttachment(String url, String photoId) throws IOException;
+    void saveWariantAttachment(String url, String photoId) throws IOException;
+    void saveSiatkaWariantAttachment(String url, String photoId) throws IOException;
 }
