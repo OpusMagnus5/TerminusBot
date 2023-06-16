@@ -1,4 +1,4 @@
-package pl.damian.bodzioch.dao;
+package pl.damian.bodzioch.dao.database;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package pl.damian.bodzioch.dao.Impl;
 
 import org.springframework.stereotype.Repository;
-import pl.damian.bodzioch.dao.DataInLists;
+import pl.damian.bodzioch.dao.database.DataInLists;
 import pl.damian.bodzioch.dao.SiatkaDAO;
 
 import java.util.Optional;

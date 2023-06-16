@@ -3,7 +3,7 @@ package pl.damian.bodzioch.fileService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import pl.damian.bodzioch.dao.DataInLists;
+import pl.damian.bodzioch.dao.database.DataInLists;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +15,16 @@ import java.util.stream.Stream;
 
 @Lazy(value = false)
 @Component
-public class ListServiceImpl implements ListService{
+public class FileServiceImpl implements FileService {
+
+    public static final String RESOURCE_DIR = "/home/ubuntu/TerminusBot/resources/";
+    public static final String HERO_DIR = "hero/";
+    public static final String SIATKA_DIR = "siatka/";
+    public static final String WARIANT_DIR = "wariant/";
+    public static final String SIATKA_WARIANTU_DIR = "siatka_wariantu/";
+    public static final String CALENDAR_DIR = "kalendarz/";
+    public static final String BLACKLIST_DIR = "black_list/";
+    public static final String JPG_FILE_EXTENSION = ".jpg";
 
     public void updateAllLists() {
         DataInLists.HERO_NAMES = updateList(HERO_DIR);
