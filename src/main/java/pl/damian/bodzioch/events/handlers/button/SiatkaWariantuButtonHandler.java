@@ -22,7 +22,7 @@ public class SiatkaWariantuButtonHandler implements EventHandler<ButtonInteracti
     public Mono<Void> handleEvent(ButtonInteractionEvent event, String param) {
         InteractionApplicationCommandCallbackSpec response;
         try {
-            logger.info("Handling SiatkaWariantuButton event");
+            logger.info("Handling SiatkaWariantuButton event. Param: " + param);
             String fileDir = FileServiceImpl.RESOURCE_DIR + FileServiceImpl.SIATKA_WARIANTU_DIR + param + FileServiceImpl.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))

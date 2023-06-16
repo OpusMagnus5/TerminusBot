@@ -44,6 +44,7 @@ public class HeroCommandHandler implements EventHandler<ChatInputInteractionEven
         String heroName = event.getOption(HeroCommand.BOHATER_HERO_COMMAND_OPTION)
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString).orElse("");
+        logger.info("hero name: " + heroName);
         if (heroDAO.getHeroByName(heroName).isEmpty()) {
             return event.reply("Nie znaleziono bohatera o nazwie: " + heroName);
         }

@@ -38,4 +38,14 @@ public class BlackListPlayerDTO {
     public void setReportingPerson(String reportingPerson) {
         this.reportingPerson = reportingPerson;
     }
+
+    @Override
+    public String toString() {
+        return "BlackListPlayerDTO{" +
+                "name='" + name + '\'' +
+                ", reason='" + reason + '\'' +
+                ", lvl='" + lvl + '\'' +
+                ", reportingPerson='" + reportingPerson + '\'' +
+                '}';
+    }
 }

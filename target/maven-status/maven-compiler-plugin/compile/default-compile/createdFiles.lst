@@ -2,6 +2,7 @@ pl\damian\bodzioch\dao\database\DataInLists.class
 pl\damian\bodzioch\events\handlers\chatinput\SiatkaWariantuAddCommandHandler.class
 pl\damian\bodzioch\commands\CalendarCommand.class
 pl\damian\bodzioch\commands\CheckBlackListCommand.class
+pl\damian\bodzioch\configuration\AppConfiguration.class
 pl\damian\bodzioch\dao\HeroDAO.class
 pl\damian\bodzioch\commands\AddToBlackListCommand.class
 pl\damian\bodzioch\dao\AttachmentDAO.class

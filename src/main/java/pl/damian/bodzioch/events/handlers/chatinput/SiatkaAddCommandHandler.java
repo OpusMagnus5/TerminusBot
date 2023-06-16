@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.commands.SiatkaAddCommand;
 import pl.damian.bodzioch.dao.AttachmentDAO;
 import pl.damian.bodzioch.dao.SiatkaDAO;
+import pl.damian.bodzioch.dao.database.DataInLists;
 import pl.damian.bodzioch.events.handlers.EventHandler;
-import pl.damian.bodzioch.fileService.FileService;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -26,14 +26,13 @@ public class SiatkaAddCommandHandler implements EventHandler<ChatInputInteractio
     AttachmentDAO attachmentDAO;
     @Autowired
     SiatkaDAO siatkaDAO;
-    @Autowired
-    FileService fileService;
 
     @Override
     public Mono<Void> handleEvent(ChatInputInteractionEvent event, String param) {
         logger.info("Handling " + SiatkaAddCommand.SIATKA_ADD_COMMAND + " command");
         Attachment attachment = getAttachment(event);
         String attachmentName = getAttachmentName(event);
+        logger.info("Attachment name: " + attachmentName);
 
         if (siatkaDAO.getSiatkaByHeroName(attachmentName).isPresent()){
             return event.reply("Siatka o nazwie " + attachmentName + "znajduje się już w bazie");
@@ -49,6 +48,7 @@ public class SiatkaAddCommandHandler implements EventHandler<ChatInputInteractio
         }
 
         String url = attachment.getUrl();
+        logger.info("URL: " + url);
         try {
             attachmentDAO.saveSiatkaAttachment(url, attachmentName);
         } catch (IOException e) {
@@ -56,7 +56,7 @@ public class SiatkaAddCommandHandler implements EventHandler<ChatInputInteractio
             event.reply("Nie udało się pobrać zdjęcia. Spróbuj ponownie.");
         }
 
-        fileService.updateAllLists();
+        DataInLists.HERO_SIATKA_LIST.add(attachmentName);
 
         return event.reply("Pomyślnie dodano kartę o nazwie " + attachmentName);
     }

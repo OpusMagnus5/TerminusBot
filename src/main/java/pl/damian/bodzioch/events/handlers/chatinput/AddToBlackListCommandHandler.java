@@ -7,7 +7,6 @@ import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.LayoutComponent;
 import discord4j.core.object.component.TextInput;
 import discord4j.core.object.entity.Attachment;
-import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.core.spec.InteractionPresentModalSpec;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,26 +38,20 @@ public class AddToBlackListCommandHandler implements EventHandler<ChatInputInter
         logger.info("Handling " + AddToBlackListCommand.ADD_PLAYER_TO_BLACKLIST_COMMAND + " command");
         Attachment attachment = getAttachment(event);
         String playerName = getPlayerName(event);
-
-        try {
-            if (!blackListDAO.getPlayersByName(playerName).isEmpty()){
-                return event.reply("Gracz o nazwie " + playerName + "znajduje się już na czarnej liście");
-            }
-        } catch (IOException e) {
-            logger.error("Error during handle " + AddToBlackListCommand.ADD_PLAYER_TO_BLACKLIST_COMMAND + " command", e);
-            return event.reply("Coś poszło nie tak, spróbuj ponownie");
+        logger.info("Player: " + playerName);
+        if (!blackListDAO.getPlayersByName(playerName).isEmpty()){
+            return event.reply("Gracz o nazwie " + playerName + " znajduje się już na czarnej liście");
         }
 
         try {
             validateAttachment(attachment);
         } catch (IllegalArgumentException e) {
             logger.warn(e.getMessage());
-            return event.reply(InteractionApplicationCommandCallbackSpec.builder()
-                    .content(e.getMessage())
-                    .build());
+            return event.reply(e.getMessage());
         }
 
         String url = attachment.getUrl();
+        logger.info("URL: " + url);
         try {
             attachmentDAO.saveBlackListAttachment(url, playerName);
         } catch (IOException e) {

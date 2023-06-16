@@ -32,7 +32,7 @@ public class SpeedCommandHandler implements EventHandler<ChatInputInteractionEve
                 .map(ApplicationCommandInteractionOptionValue::asLong).orElse(0L);
         long skill = event.getOption(SpeedCommand.SKILL_OPTION_SPEED_COMMAND).flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asLong).orElse(0L);
-
+        logger.info("Base: " + base + "\nGun: " + gun + "\nSiatka: " + siatka + "\nFamily: " + family + "\nSkill: " + skill);
         return event.reply(InteractionApplicationCommandCallbackSpec.builder()
                 .addEmbed(EmbedCreateSpec.builder()
                         .color(Color.GREEN)

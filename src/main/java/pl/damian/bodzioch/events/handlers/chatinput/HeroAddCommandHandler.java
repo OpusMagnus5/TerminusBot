@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.commands.HeroAddCommand;
 import pl.damian.bodzioch.dao.AttachmentDAO;
 import pl.damian.bodzioch.dao.HeroDAO;
+import pl.damian.bodzioch.dao.database.DataInLists;
 import pl.damian.bodzioch.events.handlers.EventHandler;
-import pl.damian.bodzioch.fileService.FileService;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -26,8 +26,6 @@ public class HeroAddCommandHandler implements EventHandler<ChatInputInteractionE
     Logger logger;
     @Autowired
     AttachmentDAO attachmentDAO;
-    @Autowired
-    FileService fileService;
 
     @Override
     public Mono<Void> handleEvent(ChatInputInteractionEvent event, String param) {
@@ -56,8 +54,8 @@ public class HeroAddCommandHandler implements EventHandler<ChatInputInteractionE
             event.reply("Nie udało się pobrać zdjęcia. Spróbuj ponownie.");
         }
 
-        fileService.updateAllLists();
-
+        DataInLists.HERO_NAMES.add(attachmentName);
+        logger.info("Pomyślnie dodano kartę o nazwie " + attachmentName);
         return event.reply("Pomyślnie dodano kartę o nazwie " + attachmentName);
     }
 

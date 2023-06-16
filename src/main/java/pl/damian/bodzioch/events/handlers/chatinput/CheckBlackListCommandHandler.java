@@ -18,7 +18,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -35,15 +34,8 @@ public class CheckBlackListCommandHandler implements EventHandler<ChatInputInter
         String playerName = getPlayerName(event);
         logger.info("Handling CheckBlackList event. Player name: {}", playerName);
 
-        Set<BlackListPlayerDTO> players;
-
-        try {
-            players = blackListDAO.getPlayersByName(playerName);
-        } catch (IOException e) {
-            logger.error("Error during process CheckBlackList event", e);
-            return event.reply("Coś poszło nie tak, spóbuj ponownie");
-        }
-
+        Set<BlackListPlayerDTO> players = blackListDAO.getPlayersByName(playerName);
+        logger.info("Players: " + players);
         if (players.isEmpty()) {
             return event.reply("Nie znaleziono gracza " + playerName + " na czarnej liście");
         }

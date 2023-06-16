@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.commands.WariantAddCommand;
 import pl.damian.bodzioch.dao.AttachmentDAO;
 import pl.damian.bodzioch.dao.HeroWariantDAO;
+import pl.damian.bodzioch.dao.database.DataInLists;
 import pl.damian.bodzioch.events.handlers.EventHandler;
-import pl.damian.bodzioch.fileService.FileService;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -25,14 +25,13 @@ public class WariantAddCommandHandler implements EventHandler<ChatInputInteracti
     AttachmentDAO attachmentDAO;
     @Autowired
     HeroWariantDAO heroWariantDAO;
-    @Autowired
-    FileService fileService;
 
     @Override
     public Mono<Void> handleEvent(ChatInputInteractionEvent event, String param) {
         logger.info("Handling " + WariantAddCommand.WARIANT_ADD_COMMAND + " command");
         Attachment attachment = getAttachment(event);
         String attachmentName = getAttachmentName(event);
+        logger.info("Attachment name: " + attachmentName);
 
         if (heroWariantDAO.getHeroWariantByName(attachmentName).isPresent()){
             return event.reply("Wariant o nazwie " + attachmentName + "znajduje się już w bazie");
@@ -48,6 +47,7 @@ public class WariantAddCommandHandler implements EventHandler<ChatInputInteracti
         }
 
         String url = attachment.getUrl();
+        logger.info("URL: " + url);
         try {
             attachmentDAO.saveWariantAttachment(url, attachmentName);
         } catch (IOException e) {
@@ -55,7 +55,7 @@ public class WariantAddCommandHandler implements EventHandler<ChatInputInteracti
             event.reply("Nie udało się pobrać zdjęcia. Spróbuj ponownie.");
         }
 
-        fileService.updateAllLists();
+        DataInLists.HERO_WARIANT_LIST.add(attachmentName);
 
         return event.reply("Pomyślnie dodano kartę wariantu o nazwie " + attachmentName);
     }

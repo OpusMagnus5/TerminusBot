@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.dao.SiatkaWariantowDAO;
 import pl.damian.bodzioch.events.handlers.EventHandler;
+import pl.damian.bodzioch.events.handlers.chatinput.HeroCommandHandler;
 import pl.damian.bodzioch.fileService.FileServiceImpl;
 import reactor.core.publisher.Mono;
 
@@ -32,7 +33,7 @@ public class WariantButtonHandler implements EventHandler<ButtonInteractionEvent
     public Mono<Void> handleEvent(ButtonInteractionEvent event, String param) {
         InteractionApplicationCommandCallbackSpec response;
         try {
-            logger.info("Handling WariantButton event");
+            logger.info("Handling WariantButton event. Param: " + param);
             String fileDir = FileServiceImpl.RESOURCE_DIR + FileServiceImpl.WARIANT_DIR + param + FileServiceImpl.JPG_FILE_EXTENSION;
             response = InteractionApplicationCommandCallbackSpec.builder()
                     .addFile(fileDir, new FileInputStream(fileDir))
@@ -43,7 +44,7 @@ public class WariantButtonHandler implements EventHandler<ButtonInteractionEvent
         }
         List<Button> buttonsList = new ArrayList<>();
         if (isWariantHaveSiatka(param)) {
-            buttonsList.add(Button.primary(SIATKA_WARIANTU_TYPE + "-" + param, "Pokaż siatkę dla wariantu"));
+            buttonsList.add(Button.primary(SIATKA_WARIANTU_TYPE + HeroCommandHandler.BUTTON_DELIMITER + param, "Pokaż siatkę dla wariantu"));
         }
         return event.reply(response.withComponents(ActionRow.of(buttonsList)));
     }

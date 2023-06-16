@@ -37,7 +37,7 @@ public class AddToBlackListFormHandler implements EventHandler<ModalSubmitIntera
             blackListDAO.savePlayer(data);
         } catch (IllegalArgumentException | IllegalStateException e) {
             logger.error(e.getMessage());
-            return event.reply("Coś poszło nie tak, spróbuj ponownie");
+            return event.reply(e.getMessage());
         } catch (IOException e) {
             logger.error("Error during save player to list", e);
             return event.reply("Coś poszło nie tak, spróbuj ponownie");

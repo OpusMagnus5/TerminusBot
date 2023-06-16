@@ -29,7 +29,7 @@ public class CalendarCommandHandler implements EventHandler<ChatInputInteraction
                     .build();
         } catch (FileNotFoundException e) {
             logger.warn("File not found", e);
-            return event.reply("Coś poszło nie tak.");
+            return event.reply("Nie znaleziono kalendarza");
         }
         return event.reply(response);
     }

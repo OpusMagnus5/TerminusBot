@@ -1,8 +1,10 @@
 package pl.damian.bodzioch.fileService;
 
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import pl.damian.bodzioch.dao.BlackListDAO;
 import pl.damian.bodzioch.dao.database.DataInLists;
 
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Lazy(value = false)
-@Component
+@Service
 public class FileServiceImpl implements FileService {
 
     public static final String RESOURCE_DIR = "/home/ubuntu/TerminusBot/resources/";
@@ -26,11 +28,21 @@ public class FileServiceImpl implements FileService {
     public static final String BLACKLIST_DIR = "black_list/";
     public static final String JPG_FILE_EXTENSION = ".jpg";
 
+    @Autowired
+    BlackListDAO blackListDAO;
+    @Autowired
+    Logger logger;
+
     public void updateAllLists() {
         DataInLists.HERO_NAMES = updateList(HERO_DIR);
         DataInLists.HERO_SIATKA_LIST = updateList(SIATKA_DIR);
         DataInLists.HERO_WARIANT_LIST = updateList(WARIANT_DIR);
         DataInLists.SIATKI_WARIANTOW_LIST = updateList(SIATKA_WARIANTU_DIR);
+        try {
+            DataInLists.BLACKLIST = blackListDAO.getAllBlackList();
+        } catch (IOException e) {
+            logger.error("Error during update BlackList", e);
+        }
     }
 
     private List<String> updateList(String dir) {
@@ -47,8 +59,8 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+/*    @Scheduled(cron = "0 0 0 * * *")
     public void scheduledUpdateAllLists(){
         updateAllLists();
-    }
+    }*/
 }

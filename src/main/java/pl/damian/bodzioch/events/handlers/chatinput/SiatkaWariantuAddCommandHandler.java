@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.commands.SiatkaWariantuAddCommand;
 import pl.damian.bodzioch.dao.AttachmentDAO;
 import pl.damian.bodzioch.dao.SiatkaWariantowDAO;
+import pl.damian.bodzioch.dao.database.DataInLists;
 import pl.damian.bodzioch.events.handlers.EventHandler;
-import pl.damian.bodzioch.fileService.FileService;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -26,15 +26,13 @@ public class SiatkaWariantuAddCommandHandler implements EventHandler<ChatInputIn
     AttachmentDAO attachmentDAO;
     @Autowired
     SiatkaWariantowDAO siatkaWariantowDAO;
-    @Autowired
-    FileService fileService;
 
     @Override
     public Mono<Void> handleEvent(ChatInputInteractionEvent event, String param) {
         logger.info("Handling " + SiatkaWariantuAddCommand.SIATKA_WARIANTU_ADD_COMMAND + " command");
         Attachment attachment = getAttachment(event);
         String attachmentName = getAttachmentName(event);
-
+        logger.info("Attachment name: " + attachmentName);
         if (siatkaWariantowDAO.getSiatkaWariantowByHeroName(attachmentName).isPresent()){
             return event.reply("Siatka wariantu o nazwie " + attachmentName + "znajduje się już w bazie");
         }
@@ -49,6 +47,7 @@ public class SiatkaWariantuAddCommandHandler implements EventHandler<ChatInputIn
         }
 
         String url = attachment.getUrl();
+        logger.info("URL: " + url);
         try {
             attachmentDAO.saveSiatkaWariantAttachment(url, attachmentName);
         } catch (IOException e) {
@@ -56,7 +55,7 @@ public class SiatkaWariantuAddCommandHandler implements EventHandler<ChatInputIn
             event.reply("Nie udało się pobrać zdjęcia. Spróbuj ponownie.");
         }
 
-        fileService.updateAllLists();
+        DataInLists.SIATKI_WARIANTOW_LIST.add(attachmentName);
 
         return event.reply("Pomyślnie dodano siatkę wariantu o nazwie " + attachmentName);
     }
