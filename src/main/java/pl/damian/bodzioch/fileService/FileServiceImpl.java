@@ -2,7 +2,6 @@ package pl.damian.bodzioch.fileService;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.dao.BlackListDAO;
 import pl.damian.bodzioch.dao.database.DataInLists;
@@ -15,7 +14,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Lazy(value = false)
 @Service
 public class FileServiceImpl implements FileService {
 
@@ -58,9 +56,4 @@ public class FileServiceImpl implements FileService {
             return Collections.emptyList();
         }
     }
-
-/*    @Scheduled(cron = "0 0 0 * * *")
-    public void scheduledUpdateAllLists(){
-        updateAllLists();
-    }*/
 }

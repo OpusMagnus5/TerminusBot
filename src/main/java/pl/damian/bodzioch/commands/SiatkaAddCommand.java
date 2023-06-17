@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class SiatkaAddCommand {
+public class SiatkaAddCommand implements Command{
 
     public static final String SIATKA_ADD_COMMAND = "siatka-add";
     public static final String SIATKA_ADD_COMMAND_ATTACHMENT_OPTION = "siatka-add-attachment";
     public static final String SIATKA_ADD_COMMAND_NAME_OPTION = "siatka-add-name";
 
-    public ApplicationCommandRequest setSiatkaAddCommand() {
+    @Override
+    public ApplicationCommandRequest setCommand() {
         int manageGuildPermission = 1 << 5;
         return ApplicationCommandRequest.builder()
                 .defaultMemberPermissions(Integer.toString(manageGuildPermission))

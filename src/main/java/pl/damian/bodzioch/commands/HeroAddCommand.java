@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class HeroAddCommand {
+public class HeroAddCommand implements Command{
 
     public static final String HERO_ADD_COMMAND = "hero-add";
     public static final String HERO_ADD_COMMAND_ATTACHMENT_OPTION = "hero-add-attachment";
     public static final String HERO_ADD_COMMAND_NAME_OPTION = "hero-add-name";
 
-    public ApplicationCommandRequest setHeroAddCommand() {
+    @Override
+    public ApplicationCommandRequest setCommand() {
         int manageGuildPermission = 1 << 5;
         return ApplicationCommandRequest.builder()
                 .defaultMemberPermissions(Integer.toString(manageGuildPermission))

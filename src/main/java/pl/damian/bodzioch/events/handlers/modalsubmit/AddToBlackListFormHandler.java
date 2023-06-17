@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.damian.bodzioch.dao.BlackListDAO;
 import pl.damian.bodzioch.events.handlers.EventHandler;
-import pl.damian.bodzioch.service.CommandsService;
+import pl.damian.bodzioch.events.handlers.chatinput.AddToBlackListCommandHandler;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -48,10 +48,10 @@ public class AddToBlackListFormHandler implements EventHandler<ModalSubmitIntera
 
     private String getDataToSave(Map<String, Optional<String>> inputMap) {
         return String.join(";",
-                inputMap.get(CommandsService.BLACKLIST_FORM_PLAYER_INPUT).orElseThrow(() -> new IllegalStateException("Player name should be exists")),
-                inputMap.get(CommandsService.BLACKLIST_FORM_REASON_INPUT).orElseThrow(() -> new IllegalStateException("Reason should be exists")),
-                OPTION_3 + inputMap.get(CommandsService.BLACKLIST_FORM_REPORTING_PERSON_INPUT).orElse(""),
-                OPTION_4 + inputMap.get( CommandsService.BLACKLIST_FORM_PLAYER_LEVEL_INPUT).orElse(""));
+                inputMap.get(AddToBlackListCommandHandler.BLACKLIST_FORM_PLAYER_INPUT).orElseThrow(() -> new IllegalStateException("Player name should be exists")),
+                inputMap.get(AddToBlackListCommandHandler.BLACKLIST_FORM_REASON_INPUT).orElseThrow(() -> new IllegalStateException("Reason should be exists")),
+                OPTION_3 + inputMap.get(AddToBlackListCommandHandler.BLACKLIST_FORM_REPORTING_PERSON_INPUT).orElse(""),
+                OPTION_4 + inputMap.get( AddToBlackListCommandHandler.BLACKLIST_FORM_PLAYER_LEVEL_INPUT).orElse(""));
     }
 
     private Optional<String> validateInputAndReturn(TextInput textInput) {

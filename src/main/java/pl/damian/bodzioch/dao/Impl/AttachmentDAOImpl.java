@@ -55,6 +55,4 @@ public class AttachmentDAOImpl implements AttachmentDAO {
         Path filePath = Paths.get(FileServiceImpl.RESOURCE_DIR + directory, playerName + FileServiceImpl.JPG_FILE_EXTENSION);
         Files.write(filePath, fileData);
     }
-
-
 }

@@ -15,7 +15,6 @@ import pl.damian.bodzioch.commands.AddToBlackListCommand;
 import pl.damian.bodzioch.dao.AttachmentDAO;
 import pl.damian.bodzioch.dao.BlackListDAO;
 import pl.damian.bodzioch.events.handlers.EventHandler;
-import pl.damian.bodzioch.service.CommandsService;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -25,6 +24,10 @@ import java.util.List;
 public class AddToBlackListCommandHandler implements EventHandler<ChatInputInteractionEvent> {
 
     public static final String BLACKLIST_FORM_MODAL = "blacklistForm";
+    public static final String BLACKLIST_FORM_PLAYER_INPUT = "blackListFormPlayerInput";
+    public static final String BLACKLIST_FORM_REASON_INPUT = "blackListFormReasonInput";
+    public static final String BLACKLIST_FORM_PLAYER_LEVEL_INPUT = "blackListFormPlayerLevelInput";
+    public static final String BLACKLIST_FORM_REPORTING_PERSON_INPUT = "blackListFormReportingPersonInput";
 
     @Autowired
     Logger logger;
@@ -93,10 +96,10 @@ public class AddToBlackListCommandHandler implements EventHandler<ChatInputInter
     }
 
     private List<LayoutComponent> buildForm() {
-        ActionRow playerName = ActionRow.of(TextInput.small(CommandsService.BLACKLIST_FORM_PLAYER_INPUT, "Nazwa gracza", "Podaj nazwę gracza").required(true));
-        ActionRow reason = ActionRow.of(TextInput.paragraph(CommandsService.BLACKLIST_FORM_REASON_INPUT, "Powód dodania", "Podaj powód").required(true));
-        ActionRow reportingPerson = ActionRow.of(TextInput.small(CommandsService.BLACKLIST_FORM_REPORTING_PERSON_INPUT, "Nazwa osoby/sojuszu zgłaszającego gracza", "Podaj nazwę osoby/sojuszu").required(false));
-        ActionRow level = ActionRow.of(TextInput.small(CommandsService.BLACKLIST_FORM_PLAYER_LEVEL_INPUT, "Poziom gracza", "Podaj poziom gracza").required(false));
+        ActionRow playerName = ActionRow.of(TextInput.small(BLACKLIST_FORM_PLAYER_INPUT, "Nazwa gracza", "Podaj nazwę gracza").required(true));
+        ActionRow reason = ActionRow.of(TextInput.paragraph(BLACKLIST_FORM_REASON_INPUT, "Powód dodania", "Podaj powód").required(true));
+        ActionRow reportingPerson = ActionRow.of(TextInput.small(BLACKLIST_FORM_REPORTING_PERSON_INPUT, "Nazwa osoby/sojuszu zgłaszającego gracza", "Podaj nazwę osoby/sojuszu").required(false));
+        ActionRow level = ActionRow.of(TextInput.small(BLACKLIST_FORM_PLAYER_LEVEL_INPUT, "Poziom gracza", "Podaj poziom gracza").required(false));
 
         return List.of(playerName, reason, reportingPerson, level);
     }

@@ -3,6 +3,7 @@ package pl.damian.bodzioch.configuration;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.Event;
+import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.gateway.intent.IntentSet;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import pl.damian.bodzioch.commands.Command;
 import pl.damian.bodzioch.events.listeners.EventListener;
 import pl.damian.bodzioch.fileService.FileService;
-import pl.damian.bodzioch.service.CommandsService;
 
 import java.util.*;
 
@@ -25,16 +26,12 @@ public class BotConfiguration {
     @Autowired
     FileService FIleService;
     @Autowired
-    CommandsService commandsService;
-    @Autowired
     Logger logger;
 
     @Bean
     public <T extends Event> GatewayDiscordClient gatewayDiscordClient(List<EventListener<T>> eventListeners) {
         final DiscordClient client = DiscordClient.create(TOKEN);
         final GatewayDiscordClient gateway = client.gateway().setEnabledIntents(IntentSet.all()).login().block();
-        commandsService.setAllCommands(gateway);
-        logger.info("Aktywowano komendy");
         FIleService.updateAllLists();
         logger.info("Zaktualizowano listy");
         for (EventListener<T> listener : eventListeners) {
@@ -53,5 +50,17 @@ public class BotConfiguration {
         return WebClient.builder()
                 .exchangeStrategies(strategies)
                 .build();
+    }
+
+    @Bean
+    public void setAllCommands(GatewayDiscordClient gateway, List<Command> commands) {
+        List<ApplicationCommandRequest> commandRequests = commands.stream()
+                .map(Command::setCommand)
+                .toList();
+
+        gateway.getRestClient().getApplicationService()
+                .bulkOverwriteGuildApplicationCommand(BotConfiguration.applicationId, 1084093399453421681L,  commandRequests)
+                .subscribe();
+        logger.info("Aktywowano komendy");
     }
 }

@@ -6,11 +6,12 @@ import discord4j.discordjson.json.ApplicationCommandRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HeroCommand {
+public class HeroCommand implements Command{
     public static final String HERO_COMMAND = "hero";
     public static final String BOHATER_HERO_COMMAND_OPTION = "bohater";
 
-    public ApplicationCommandRequest setHeroCommand() {
+    @Override
+    public ApplicationCommandRequest setCommand() {
         return ApplicationCommandRequest.builder()
                 .name(HERO_COMMAND)
                 .description("Wyświetla zdjęcie bohatera.")

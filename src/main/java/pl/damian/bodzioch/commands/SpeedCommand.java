@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class SpeedCommand {
+public class SpeedCommand implements Command{
 
     public static final String SPEED_COMMAND = "speed";
     public static final String BASE_OPTION_SPEED_COMMAND = "baza";
@@ -19,7 +19,8 @@ public class SpeedCommand {
     public static final String FAMILY_OPTION_SPEED_COMMAND = "rodzina";
     public static final String SKILL_OPTION_SPEED_COMMAND = "skill";
 
-    public ApplicationCommandRequest setSpeedCommand() {
+    @Override
+    public ApplicationCommandRequest setCommand() {
         return ApplicationCommandRequest.builder()
                 .name(SPEED_COMMAND)
                 .description("Sprawdza czy uda się przełamać szybkość bohatera")

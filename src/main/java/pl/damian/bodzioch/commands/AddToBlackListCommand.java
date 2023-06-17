@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class AddToBlackListCommand {
+public class AddToBlackListCommand implements Command{
 
     public static final String ADD_PLAYER_TO_BLACKLIST_COMMAND = "blacklist-add";
     public static final String DEFENSE_PHOTO_OPTION_ADD_PLAYER_TO_BLACKLIST_COMMAND = "defense-photo";
     public static final String PLAYER_NAME_OPTION_ADD_PLAYER_TO_BLACKLIST_COMMAND = "player-name-option-add-blacklist";
 
-    public ApplicationCommandRequest setAddPlayerToBlackList() {
+    @Override
+    public ApplicationCommandRequest setCommand() {
         int manageGuildPermission = 1 << 5;
         return ApplicationCommandRequest.builder()
                 .defaultMemberPermissions(Integer.toString(manageGuildPermission))

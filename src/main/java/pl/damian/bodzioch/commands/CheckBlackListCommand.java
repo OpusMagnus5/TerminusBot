@@ -6,12 +6,13 @@ import discord4j.discordjson.json.ApplicationCommandRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CheckBlackListCommand {
+public class CheckBlackListCommand implements Command{
 
     public static final String CHECK_BLACKLIST_COMMAND = "blacklist";
     public static final String PLAYER_NAME_OPTION = "player-name";
 
-    public ApplicationCommandRequest setCheckBlackListCommand() {
+    @Override
+    public ApplicationCommandRequest setCommand() {
         return ApplicationCommandRequest.builder()
                 .name(CHECK_BLACKLIST_COMMAND)
                 .description("Sprawdza gracza czy znajduje się na czarnej liście")
