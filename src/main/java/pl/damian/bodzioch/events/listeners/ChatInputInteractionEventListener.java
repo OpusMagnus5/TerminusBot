@@ -49,24 +49,29 @@ public class ChatInputInteractionEventListener implements EventListener<ChatInpu
 
     @Override
     public Mono<Void> processCommand(ChatInputInteractionEvent event) {
-        String eventName = event.getCommandName();
-        return switch (eventName) {
-            case HERO_TYPE -> heroCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            case CALENDAR_TYPE -> calendarCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            case SPEED_TYPE -> speedCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            case ADD_TO_BLACKLIST_TYPE -> addToBlackListCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            case CHECK_BLACKLIST_TYPE -> checkBlackListCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            case ADD_HERO_TYPE -> heroAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            case ADD_SIATKA_TYPE -> siatkaAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            case ADD_WARIANT_TYPE -> wariantAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            case ADD_SIATKA_WARIANTU_TYPE -> siatkaWariantuAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
-            default -> Mono.empty();
-        };
+        try {
+            String eventName = event.getCommandName();
+            return switch (eventName) {
+                case HERO_TYPE -> heroCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                case CALENDAR_TYPE -> calendarCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                case SPEED_TYPE -> speedCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                case ADD_TO_BLACKLIST_TYPE -> addToBlackListCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                case CHECK_BLACKLIST_TYPE -> checkBlackListCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                case ADD_HERO_TYPE -> heroAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                case ADD_SIATKA_TYPE -> siatkaAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                case ADD_WARIANT_TYPE -> wariantAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                case ADD_SIATKA_WARIANTU_TYPE -> siatkaWariantuAddCommandHandler.handleEvent(event, null).onErrorResume(error -> handleError(error, event));
+                default -> Mono.empty();
+            };
+        } catch (Exception e) {
+            logger.error("Error ChatInputInteractionEvent: ", e);
+            return Mono.empty();
+        }
     }
 
     @Override
     public Mono<Void> handleError(Throwable error, ChatInputInteractionEvent event) {
         logger.info("Error during process ChatInputInteractionEvent", error);
-        return event.reply(error.getMessage());
+        return Mono.empty();
     }
 }

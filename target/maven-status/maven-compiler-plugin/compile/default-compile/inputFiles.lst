@@ -1,6 +1,7 @@
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\events\handlers\chatinput\SiatkaWariantuAddCommandHandler.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\events\listeners\ChatInputAutoCompleteEventListener.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\commands\SiatkaAddCommand.java
+C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\commands\Command.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\commands\CalendarCommand.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\commands\SpeedCommand.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\events\listeners\ChatInputInteractionEventListener.java
@@ -28,7 +29,6 @@ C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\dao\Impl\AttachmentDAOImpl.
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\events\handlers\chatinput\SiatkaAddCommandHandler.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\dao\Impl\HeroWariantDAOImpl.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\events\handlers\button\SiatkaButtonHandler.java
-C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\service\CommandsService.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\events\handlers\chatinput\CheckBlackListCommandHandler.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\dao\Impl\HeroDAOImpl.java
 C:\Java\TerminusBot\src\main\java\pl\damian\bodzioch\commands\HeroCommand.java

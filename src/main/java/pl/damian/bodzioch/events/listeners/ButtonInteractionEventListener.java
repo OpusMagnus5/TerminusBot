@@ -33,20 +33,25 @@ public class ButtonInteractionEventListener implements EventListener<ButtonInter
 
     @Override
     public Mono<Void> processCommand(ButtonInteractionEvent event) {
-        String buttonId = event.getInteraction().getData().data().get().customId().get();
-        String buttonType = buttonId.split(HeroCommandHandler.BUTTON_DELIMITER)[0];
-        String param = buttonId.split(HeroCommandHandler.BUTTON_DELIMITER)[1];
-        return switch (buttonType) {
-            case SIATKA_BUTTON_ID -> siatkaButtonHandler.handleEvent(event, param).onErrorResume(error -> handleError(error, event));
-            case WARIANT_BUTTON_ID -> wariantButtonHandler.handleEvent(event, param).onErrorResume(error -> handleError(error, event));
-            case SIATKA_WARIANTU_TYPE -> siatkaWariantuButtonHandler.handleEvent(event, param).onErrorResume(error -> handleError(error, event));
-            default -> Mono.empty();
-        };
+        try {
+            String buttonId = event.getInteraction().getData().data().get().customId().get();
+            String buttonType = buttonId.split(HeroCommandHandler.BUTTON_DELIMITER)[0];
+            String param = buttonId.split(HeroCommandHandler.BUTTON_DELIMITER)[1];
+            return switch (buttonType) {
+                case SIATKA_BUTTON_ID -> siatkaButtonHandler.handleEvent(event, param).onErrorResume(error -> handleError(error, event));
+                case WARIANT_BUTTON_ID -> wariantButtonHandler.handleEvent(event, param).onErrorResume(error -> handleError(error, event));
+                case SIATKA_WARIANTU_TYPE -> siatkaWariantuButtonHandler.handleEvent(event, param).onErrorResume(error -> handleError(error, event));
+                default -> Mono.empty();
+            };
+        } catch (Exception e) {
+            logger.error("Error: ", e);
+            return Mono.empty();
+        }
     }
 
     @Override
     public Mono<Void> handleError(Throwable error, ButtonInteractionEvent event) {
-        logger.info("Error during process ButtonInteractionEventListener");
-        return event.reply(error.getMessage());
+        logger.error("Error during process ButtonInteractionEventListener", error);
+        return event.reply("Coś poszło nie tak");
     }
 }

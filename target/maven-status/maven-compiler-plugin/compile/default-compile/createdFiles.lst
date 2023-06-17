@@ -17,6 +17,7 @@ pl\damian\bodzioch\commands\SiatkaWariantuAddCommand.class
 pl\damian\bodzioch\fileService\FileServiceImpl.class
 pl\damian\bodzioch\configuration\BotConfiguration.class
 pl\damian\bodzioch\dao\Impl\SiatkaWariantowDAOImpl.class
+pl\damian\bodzioch\commands\Command.class
 pl\damian\bodzioch\events\listeners\EventListener.class
 pl\damian\bodzioch\dao\Impl\BlackListDAOImpl.class
 pl\damian\bodzioch\dao\Impl\HeroWariantDAOImpl.class
@@ -31,7 +32,6 @@ pl\damian\bodzioch\commands\HeroAddCommand.class
 pl\damian\bodzioch\commands\SpeedCommand.class
 pl\damian\bodzioch\events\handlers\autocomplete\HeroCommandCompleteHandler.class
 pl\damian\bodzioch\dto\BlackListPlayerDTO.class
-pl\damian\bodzioch\service\CommandsService.class
 pl\damian\bodzioch\commands\SiatkaAddCommand.class
 pl\damian\bodzioch\commands\HeroCommand.class
 pl\damian\bodzioch\events\handlers\chatinput\WariantAddCommandHandler.class

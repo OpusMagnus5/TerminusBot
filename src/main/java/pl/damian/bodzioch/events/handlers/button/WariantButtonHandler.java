@@ -46,6 +46,9 @@ public class WariantButtonHandler implements EventHandler<ButtonInteractionEvent
         if (isWariantHaveSiatka(param)) {
             buttonsList.add(Button.primary(SIATKA_WARIANTU_TYPE + HeroCommandHandler.BUTTON_DELIMITER + param, "Pokaż siatkę dla wariantu"));
         }
+        if (buttonsList.isEmpty()) {
+            return event.reply(response);
+        }
         return event.reply(response.withComponents(ActionRow.of(buttonsList)));
     }
 
